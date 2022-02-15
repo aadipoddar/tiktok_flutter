@@ -37,7 +37,8 @@ jobs:
       - name: Clean
         run: flutter clean
     
-      - name: Build Android
-        run: 
-              flutter build appbundle
-              flutter build apk --split-per-abi
+      - name: Build App Bundle
+        run: flutter build appbundle
+        
+      - name: Build Apk
+        run: flutter build apk --split-per-abi
