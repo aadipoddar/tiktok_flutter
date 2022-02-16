@@ -148,11 +148,18 @@ jobs:
       - name: Build Windows
         run: flutter build windows
 
+      - name: Zip
+        run: |
+            cd build/windows/runner/Release
+            7z a -r ../Release *
+            cd..
+            ls
+
       - name: Publish Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: assets-for-download
-          path: build/windows/runner/Release/
+          path: build/windows/runner/Release.zip
 
   build_linux:
     name: Build Flutter (Linux)
