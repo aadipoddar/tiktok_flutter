@@ -122,11 +122,14 @@ jobs:
       - name: Build web
         run: flutter build web --release
 
+      - name: Zip
+        run: zip -r web.zip build/web
+
       - name: Upload web artifact 
         uses: actions/upload-artifact@v1
         with:
           name: assets-for-download
-          path: build/web/
+          path: web.zip
 
   build_windows:
     name: Build Flutter (Windows)
@@ -159,7 +162,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: assets-for-download
-          path: build/windows/runner/Release.zip
+          path: build/windows/runner/Release.7z
 
   build_linux:
     name: Build Flutter (Linux)
