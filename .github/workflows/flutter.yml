@@ -53,7 +53,21 @@ jobs:
           channel: "stable"
 
       - name: Build iOS
-        run: flutter build ios --release --no-codesign
+        run: |
+          flutter build ios --no-codesign
+          cd build/ios/iphoneos
+          mkdir Payload
+          cd Payload
+          ln -s ../Runner.app
+          cd ..
+          zip -r app.ipa Payload
+
+      - name: Push iOS File to Releases
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/ios/iphoneos/app.ipa"
+          tag: v1.${{ github.run_number }}
+          token: ${{ secrets.TOKEN }}
 
   build_android:
     name: Build Flutter (Android)
@@ -81,10 +95,17 @@ jobs:
       - name: Build Apk
         run: flutter build apk --split-per-abi
 
-      - name: Push to Releases
+      - name: Push Apk to Releases
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/flutter-apk/*"
+          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk"
+          tag: v1.${{ github.run_number }}
+          token: ${{ secrets.TOKEN }}
+
+      - name: Push App Bundle to Releases
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/app/outputs/bundle/release/app-release.aab"
           tag: v1.${{ github.run_number }}
           token: ${{ secrets.TOKEN }}
 
