@@ -140,6 +140,7 @@ jobs:
         run: flutter build windows
 
       - name: Zip Files
+        uses: montudor/action-zip@v1
         run: |
           cd build/windows/runner/Release
           zip -r app.ipa windows
