@@ -8,7 +8,7 @@ on:
 
 jobs:
   flutter_test:
-    name: Build Flutter Test and Analysis
+    name: Flutter Test and Analysis
     runs-on: ubuntu-latest
 
     steps:
@@ -28,6 +28,9 @@ jobs:
 
       - name: Version
         run: flutter --version
+
+      - name: Doctor
+        run: flutter doctor
 
       - name: Pub Get
         run: flutter pub get
@@ -53,7 +56,20 @@ jobs:
           channel: "stable"
 
       - name: Build iOS
-        run: flutter build ios --release --no-codesign
+        run: |
+          flutter build ios --no-codesign
+          cd build/ios/iphoneos
+          mkdir Payload
+          cd Payload
+          ln -s ../Runner.app
+          cd ..
+          zip -r app.ipa Payload
+
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: assets-for-download
+          path: build/ios/iphoneos/app.ipa
 
   build_android:
     name: Build Flutter (Android)
@@ -79,7 +95,15 @@ jobs:
         run: flutter build appbundle
 
       - name: Build Apk
-        run: flutter build apk --split-per-abi
+        run: flutter build apk --release
+
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: assets-for-download
+          path: |
+            build/app/outputs/bundle/release/app-release.aab
+            build/app/outputs/flutter-apk/app-release.apk
 
   build_web:
     name: Build Flutter (Web)
@@ -95,8 +119,19 @@ jobs:
         with:
           channel: "stable"
 
-      - name: Build Web
-        run: flutter build web
+      - name: Build web
+        run: flutter build web --release
+
+      - name: Zip
+        run: |
+          cd build
+          zip -r web.zip web
+
+      - name: Upload web artifact 
+        uses: actions/upload-artifact@v1
+        with:
+          name: assets-for-download
+          path: build/web.zip
 
   build_windows:
     name: Build Flutter (Windows)
@@ -117,6 +152,18 @@ jobs:
 
       - name: Build Windows
         run: flutter build windows
+
+      - name: Zip
+        run: |
+            cd build/windows/runner/Release
+            7z a -r ../Release *
+            cd..
+
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: assets-for-download
+          path: build/windows/runner/Release.7z
 
   build_linux:
     name: Build Flutter (Linux)
@@ -141,7 +188,18 @@ jobs:
         run: flutter config --enable-linux-desktop
 
       - name: Build Linux
-        run: flutter build linux
+        run: flutter build linux --release
+
+      - name: Zip
+        run: |
+          cd build/linux/x64/release
+          zip -r linux.zip bundle
+
+      - name: Upload web artifact 
+        uses: actions/upload-artifact@v1
+        with:
+          name: assets-for-download
+          path: build/linux/x64/release/linux.zip
 
   build_macos:
     name: Build Flutter (Macos)
@@ -161,4 +219,33 @@ jobs:
         run: flutter config --enable-macos-desktop
 
       - name: Build Macos
-        run: flutter build macos
+        run: flutter build macos --release
+
+      - name: Zip
+        run: |
+          cd build/macos/Build/Products
+          zip -r macos.zip Release
+
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: assets-for-download
+          path: build/macos/Build/Products/macos.zip
+
+  publish_release:
+    name: Publish Build files to releases
+    needs: [flutter_test, build_macos, build_linux, build_windows, build_web, build_android, build_ios]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Downlaod Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: assets-for-download
+
+      - name: Push Files to Releases
+        uses: ncipollo/release-action@v1
+        with:
+            artifacts: "app.ipa, flutter-apk/app-release.apk, bundle/release/app-release.aab, linux.zip, macos.zip, Release.7z, web.zip"
+            tag: v1.${{ github.run_number }}
+            token: ${{ secrets.TOKEN }}
