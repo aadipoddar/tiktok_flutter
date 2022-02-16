@@ -123,7 +123,7 @@ jobs:
         run: flutter build web --release
 
       - name: Zip
-        run: zip -r web.zip build/web
+        run: zip -r web.zip build/web/build/web
 
       - name: Upload web artifact 
         uses: actions/upload-artifact@v1
@@ -189,7 +189,10 @@ jobs:
         run: flutter build linux --release
 
       - name: Zip
-        run: zip -r linux.zip build/linux
+        run: |
+          cd build/linux/release
+          ls
+          zip -r linux.zip bundle
 
       - name: Upload web artifact 
         uses: actions/upload-artifact@v1
@@ -215,7 +218,16 @@ jobs:
         run: flutter config --enable-macos-desktop
 
       - name: Build Macos
-        run: flutter build macos
+        run: flutter build macos --release
+
+      - name: Zip
+        run: zip -r macos.zip build
+
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: assets-for-download
+          path: macos.zip
 
   # publish_release:
   #   name: Publish Build files to releases
