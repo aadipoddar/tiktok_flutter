@@ -232,15 +232,20 @@ jobs:
           name: assets-for-download
           path: build/macos/Build/Products/macos.zip
 
-  # publish_release:
-  #   name: Publish Build files to releases
-  #   needs: [flutter_test, build_macos, build_linux, build_windows, build_web, build_android, build_ios]
-  #   runs-on: macos-latest
+  publish_release:
+    name: Publish Build files to releases
+    needs: [flutter_test, build_macos, build_linux, build_windows, build_web, build_android, build_ios]
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Push Apk to Releases
-  #       uses: ncipollo/release-action@v1
-  #       with:
-  #           artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk, build/ios/iphoneos/app.ipa, build/app/outputs/bundle/release/app-release.aab"
-  #           tag: v1.${{ github.run_number }}
-  #           token: ${{ secrets.TOKEN }}
+    steps:
+      - name: Downlaod Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: assets-for-download
+
+      - name: Push Files to Releases
+        uses: ncipollo/release-action@v1
+        with:
+            artifacts: "app.ipa, flutter-apk/app-release.apk, bundle/release/app-release.aab, linux.zip, macos.zip, Release.7z, web.zip"
+            tag: v1.${{ github.run_number }}
+            token: ${{ secrets.TOKEN }}
