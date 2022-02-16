@@ -156,7 +156,6 @@ jobs:
             cd build/windows/runner/Release
             7z a -r ../Release *
             cd..
-            ls
 
       - name: Publish Artifacts
         uses: actions/upload-artifact@v2
@@ -187,7 +186,16 @@ jobs:
         run: flutter config --enable-linux-desktop
 
       - name: Build Linux
-        run: flutter build linux
+        run: flutter build linux --release
+
+      - name: Zip
+        run: zip -r linux.zip build/linux
+
+      - name: Upload web artifact 
+        uses: actions/upload-artifact@v1
+        with:
+          name: assets-for-download
+          path: linux.zip
 
   build_macos:
     name: Build Flutter (Macos)
