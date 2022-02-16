@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tiktok_flutter/constants.dart';
-import 'package:tiktok_flutter/views/screens/auth/login_screen.dart';
 import 'package:tiktok_flutter/views/screens/auth/signup_screen.dart';
 
 void main() {
