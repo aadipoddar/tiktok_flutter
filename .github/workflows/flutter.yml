@@ -139,18 +139,11 @@ jobs:
       - name: Build Windows
         run: flutter build windows
 
-      - name: Install zip
-        uses: montudor/action-zip@v1
-
-      - name: Zip Files
-        run: zip -qq -r windows.zip data flutter_windows.dll tiktok_flutter.exe
-        working-directory: build/windows/runner/Release
-
       - name: Publish Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: assets-for-download
-          path: build/windows/runner/Release/windows.zip
+          path: build/windows/runner/Release
 
   build_linux:
     name: Build Flutter (Linux)
