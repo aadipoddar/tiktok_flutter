@@ -62,13 +62,6 @@ jobs:
           cd ..
           zip -r app.ipa Payload
 
-      - name: Push iOS File to Releases
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "build/ios/iphoneos/app.ipa"
-          tag: v1.${{ github.run_number }}
-          token: ${{ secrets.TOKEN }}
-
   build_android:
     name: Build Flutter (Android)
     needs: [flutter_test]
@@ -94,20 +87,6 @@ jobs:
 
       - name: Build Apk
         run: flutter build apk --split-per-abi
-
-      - name: Push Apk to Releases
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk"
-          tag: v1.${{ github.run_number }}
-          token: ${{ secrets.TOKEN }}
-
-      - name: Push App Bundle to Releases
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "build/app/outputs/bundle/release/app-release.aab"
-          tag: v1.${{ github.run_number }}
-          token: ${{ secrets.TOKEN }}
 
   build_web:
     name: Build Flutter (Web)
@@ -190,3 +169,15 @@ jobs:
 
       - name: Build Macos
         run: flutter build macos
+
+  publish_release:
+    name: Publish Build files to releases
+    needs: [flutter_test, build_macos, build_linux, build_windows, build_web, build_android, build_ios]
+    runs-on: macos-latest
+
+    - name: Push Apk to Releases
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk, build/ios/iphoneos/app.ipa, build/app/outputs/bundle/release/app-release.aab"
+          tag: v1.${{ github.run_number }}
+          token: ${{ secrets.TOKEN }}
