@@ -125,7 +125,6 @@ jobs:
       - name: Zip
         run: |
           cd build
-          ls
           zip -r web.zip web
 
       - name: Upload web artifact 
@@ -193,15 +192,14 @@ jobs:
 
       - name: Zip
         run: |
-          cd build/linux/x64
-          ls
-          zip -r linux.zip release
+          cd build/linux/x64/release
+          zip -r linux.zip bundle
 
       - name: Upload web artifact 
         uses: actions/upload-artifact@v1
         with:
           name: assets-for-download
-          path: build/linux/x64/linux.zip
+          path: build/linux/x64/release/linux.zip
 
   build_macos:
     name: Build Flutter (Macos)
@@ -226,7 +224,6 @@ jobs:
       - name: Zip
         run: |
           cd build/macos/Build/Products
-          ls
           zip -r macos.zip Release
 
       - name: Publish Artifacts
