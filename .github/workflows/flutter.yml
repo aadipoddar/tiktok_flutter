@@ -98,7 +98,10 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: assets-for-download
-          path: build/app/outputs/bundle/release/app-release.aab, build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+          path: |
+            build/app/outputs/bundle/release/app-release.aab
+            build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+
 
   build_web:
     name: Build Flutter (Web)
