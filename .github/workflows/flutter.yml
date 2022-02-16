@@ -123,13 +123,16 @@ jobs:
         run: flutter build web --release
 
       - name: Zip
-        run: zip -r web.zip build/web/build/web
+        run: |
+          cd build
+          ls
+          zip -r web.zip web
 
       - name: Upload web artifact 
         uses: actions/upload-artifact@v1
         with:
           name: assets-for-download
-          path: web.zip
+          path: build/web.zip
 
   build_windows:
     name: Build Flutter (Windows)
@@ -190,15 +193,15 @@ jobs:
 
       - name: Zip
         run: |
-          cd build/linux
+          cd build/linux/x64
           ls
-          zip -r linux.zip bundle
+          zip -r linux.zip release
 
       - name: Upload web artifact 
         uses: actions/upload-artifact@v1
         with:
           name: assets-for-download
-          path: linux.zip
+          path: build/linux/x64/linux.zip
 
   build_macos:
     name: Build Flutter (Macos)
@@ -221,13 +224,16 @@ jobs:
         run: flutter build macos --release
 
       - name: Zip
-        run: zip -r macos.zip build
+        run: |
+          cd build/macos/Build/Products
+          ls
+          zip -r macos.zip Release
 
       - name: Publish Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: assets-for-download
-          path: macos.zip
+          path: build/macos/Build/Products/macos.zip
 
   # publish_release:
   #   name: Publish Build files to releases
