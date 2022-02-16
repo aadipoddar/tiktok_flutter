@@ -29,6 +29,9 @@ jobs:
       - name: Version
         run: flutter --version
 
+      - name: Doctor
+        run: flutter doctor
+
       - name: Pub Get
         run: flutter pub get
 
@@ -116,8 +119,14 @@ jobs:
         with:
           channel: "stable"
 
-      - name: Build Web
-        run: flutter build web
+      - name: Build web
+        run: flutter build web --release
+
+      - name: Upload web artifact 
+        uses: actions/upload-artifact@v1
+        with:
+          name: assets-for-download
+          path: build/web/
 
   build_windows:
     name: Build Flutter (Windows)
@@ -143,7 +152,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: assets-for-download
-          path: build/windows/runner/Release
+          path: build/windows/runner/Release/
 
   build_linux:
     name: Build Flutter (Linux)
