@@ -122,7 +122,7 @@ jobs:
   build_windows:
     name: Build Flutter (Windows)
     needs: [flutter_test]
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout
@@ -139,18 +139,11 @@ jobs:
       - name: Build Windows
         run: flutter build windows
 
-      - name: Install zip
-        uses: montudor/action-zip@v1
-
-      - name: Zip output
-        run: zip -qq -r windows.zip Release
-        working-directory: build/windows/runner
-
       - name: Publish Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: assets-for-download
-          path: build/windows/runner/windows.zip
+          path: build/windows/runner/
 
   build_linux:
     name: Build Flutter (Linux)
