@@ -190,7 +190,7 @@ jobs:
 
       - name: Zip
         run: |
-          cd build/linux/release
+          cd build/linux
           ls
           zip -r linux.zip bundle
 
