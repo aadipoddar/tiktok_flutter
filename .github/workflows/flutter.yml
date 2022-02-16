@@ -175,9 +175,10 @@ jobs:
     needs: [flutter_test, build_macos, build_linux, build_windows, build_web, build_android, build_ios]
     runs-on: macos-latest
 
-    - name: Push Apk to Releases
+    steps:
+      - name: Push Apk to Releases
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk, build/ios/iphoneos/app.ipa, build/app/outputs/bundle/release/app-release.aab"
-          tag: v1.${{ github.run_number }}
-          token: ${{ secrets.TOKEN }}
+            artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk, build/ios/iphoneos/app.ipa, build/app/outputs/bundle/release/app-release.aab"
+            tag: v1.${{ github.run_number }}
+            token: ${{ secrets.TOKEN }}
