@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tiktok_flutter/constants.dart';
 import 'package:tiktok_flutter/views/widgets/text_input_field.dart';
@@ -54,7 +53,7 @@ class LoginScreen extends StatelessWidget {
                       borderRadius: const BorderRadius.all(Radius.circular(5))),
                   child: InkWell(
                       onTap: () {
-                        print('login user');
+                        //print('login user');
                       },
                       child: const Center(
                         child: Text(
@@ -75,7 +74,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                   InkWell(
                       onTap: () {
-                        print('Navigating User');
+                        //print('Navigating User');
                       },
                       child: Text(
                         'Register',
