@@ -29,16 +29,15 @@ class SignupScreen extends StatelessWidget {
                 children: [
                   const CircleAvatar(
                     radius: 64,
-                    backgroundImage: NetworkImage("https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1031&q=80"),
+                    backgroundImage: NetworkImage(
+                        "https://images.unsplash.com/photo-1511367461989-f85a21fda167?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1031&q=80"),
                     backgroundColor: Colors.black,
                   ),
                   Positioned(
                     bottom: -10,
                     left: 80,
                     child: IconButton(
-                      onPressed: () {
-                        //print("pick image");
-                      },
+                      onPressed: () => authController.pickImage(),
                       icon: const Icon(Icons.add_a_photo),
                     ),
                   )
@@ -69,10 +68,10 @@ class SignupScreen extends StatelessWidget {
                 width: MediaQuery.of(context).size.width,
                 margin: const EdgeInsets.symmetric(horizontal: 20),
                 child: TextInputField(
-                  controller: _passwordController,
-                  labelText: 'Password',
-                  icon: Icons.lock,
-                ),
+                    controller: _passwordController,
+                    labelText: 'Password',
+                    icon: Icons.lock,
+                    isObscure: true),
               ),
               const SizedBox(
                 height: 30,
@@ -84,9 +83,11 @@ class SignupScreen extends StatelessWidget {
                       color: buttonColor,
                       borderRadius: const BorderRadius.all(Radius.circular(5))),
                   child: InkWell(
-                      onTap: () {
-                        //print('register user');
-                      },
+                      onTap: () => authController.registerUser(
+                          _usernameController.text,
+                          _emailController.text,
+                          _passwordController.text,
+                          authController.profilePhoto),
                       child: const Center(
                         child: Text(
                           'Register',
@@ -105,8 +106,8 @@ class SignupScreen extends StatelessWidget {
                     style: TextStyle(fontSize: 20),
                   ),
                   InkWell(
-                      onTap: () {
-                        //print('Navigating User');
+                      onTap: () => {
+                        // print('Navigating User');
                       },
                       child: Text(
                         'Login',
