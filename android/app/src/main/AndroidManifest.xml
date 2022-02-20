@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.aadi.tiktok_flutter">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="Tik Tok"
         android:name="${applicationName}"
