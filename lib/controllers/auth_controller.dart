@@ -1,21 +1,20 @@
 import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tiktok_flutter/constants.dart';
-import 'package:get/get.dart';
 import 'package:tiktok_flutter/models/user.dart' as model;
 import 'package:tiktok_flutter/views/screens/auth/login_screen.dart';
 import 'package:tiktok_flutter/views/screens/home_screen.dart';
 
 class AuthController extends GetxController {
   static AuthController instance = Get.find();
-
   late Rx<User?> _user;
   late Rx<File?> _pickedImage;
 
   File? get profilePhoto => _pickedImage.value;
+  User get user => _user.value!;
 
   @override
   void onReady() {
@@ -36,7 +35,6 @@ class AuthController extends GetxController {
   void pickImage() async {
     final pickedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
-
     if (pickedImage != null) {
       Get.snackbar('Profile Picture',
           'You have successfully selected your profile picture!');
@@ -67,14 +65,16 @@ class AuthController extends GetxController {
           image != null) {
         // save out user to our auth and firebase firestore
         UserCredential cred = await firebaseAuth.createUserWithEmailAndPassword(
-            email: email, password: password);
-
+          email: email,
+          password: password,
+        );
         String downloadUrl = await _uploadToStorage(image);
         model.User user = model.User(
-            name: username,
-            email: email,
-            uid: cred.user!.uid,
-            profilePhoto: downloadUrl);
+          name: username,
+          email: email,
+          uid: cred.user!.uid,
+          profilePhoto: downloadUrl,
+        );
         await firestore
             .collection('users')
             .doc(cred.user!.uid)
@@ -82,10 +82,16 @@ class AuthController extends GetxController {
 
         Get.snackbar('Success', 'Register Success');
       } else {
-        Get.snackbar('Error Creating Account', 'Please Enter all the Fields');
+        Get.snackbar(
+          'Error Creating Account',
+          'Please enter all the fields',
+        );
       }
     } catch (e) {
-      Get.snackbar('Error Creating Account', e.toString());
+      Get.snackbar(
+        'Error Creating Account',
+        e.toString(),
+      );
     }
   }
 
@@ -102,5 +108,9 @@ class AuthController extends GetxController {
     } catch (e) {
       Get.snackbar('Error Logging In', e.toString());
     }
+  }
+
+  void signOut() async {
+    await firebaseAuth.signOut();
   }
 }
